@@ -1,9 +1,10 @@
+
 <!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sistema MES Simplificado — Produção Elétrica</title>
+  <title>Dashboard Controle Processo — Fase Elétrica</title>
 
   <style>
     :root{
@@ -27,89 +28,117 @@
       color:var(--text);
     }
 
-    header{
-      padding:18px;
-      border-bottom:1px solid var(--line);
-      position:sticky;
-      top:0;
-      backdrop-filter: blur(10px);
-    }
-
-    h1{font-size:18px;margin:0;}
-    .sub{font-size:12px;color:var(--muted);margin-top:6px;}
+    canvas{width:100% !important;height:290px !important;}
+    .smallCanvas canvas{height:240px !important;}
   </style>
 </head>
 
 <body>
 
-<header>
-  <h1>🏭 Sistema MES Simplificado — Monitoramento de Produção Elétrica</h1>
-  <div class="sub">
-    Controle de execução de tarefas, rastreabilidade por responsável técnico e análise de eficiência operacional.
-  </div>
-</header>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
 <script>
 /* =========================
-   PADRÃO INDUSTRIAL
+   FIX PRINCIPAL AQUI
 ========================= */
 
-const STATUS = {
-  CONCLUIDO: "CONCLUIDO",
-  NAO_CONCLUIDO: "NAO_CONCLUIDO",
-  NAO_APLICAVEL: "NAO_APLICAVEL"
-};
-
-/* conversor visual (não quebra sua base antiga) */
-function statusLabel(st){
-  if(st==="SIM") return "✔ Concluído";
-  if(st==="NAO") return "❌ Não Concluído";
-  if(st==="NA") return "⚪ Não Aplicável";
-  return st;
+function safeGrid(){
+  return { color: "rgba(255,255,255,.06)" };
 }
 
 /* =========================
-   TÍTULOS KPI (INDUSTRIAL)
-========================= */
-
-const KPIS = {
-  eficiencia: "Eficiência Operacional (%)",
-  retrabalho: "Taxa de Retrabalho (%)",
-  atraso: "Desvio Médio de Prazo (dias)",
-  backlog: "Backlog de Produção (Pendências)",
-  dentroPrazo: "Aderência ao Prazo (%)",
-  atrasoCritico: "Índice de Atraso Crítico (%)"
-};
-
-/* =========================
-   EXEMPLO SIMPLES (MANTIDO)
+   EXEMPLO DE USO CORRIGIDO
 ========================= */
 
 const ctx = document.createElement("canvas");
 document.body.appendChild(ctx);
 
 new Chart(ctx, {
-  type:"bar",
-  data:{
-    labels:["Linha A","Linha B","Linha C"],
-    datasets:[{
-      label:"Eficiência Operacional",
-      data:[78,85,92],
-      backgroundColor:"rgba(74,163,255,.7)"
+  type: "bar",
+  data: {
+    labels: ["A", "B", "C"],
+    datasets: [{
+      label: "Teste",
+      data: [10, 20, 30],
+      backgroundColor: "rgba(74,163,255,.7)"
     }]
   },
-  options:{
-    plugins:{
-      title:{
-        display:true,
-        text:"📊 Eficiência Operacional por Linha de Produção"
+  options: {
+    scales: {
+      x: {
+        ticks: { color: "#cfe0ff" },
+        grid: safeGrid()
+      },
+      y: {
+        ticks: { color: "#cfe0ff" },
+        grid: safeGrid()
       }
-    },
-    scales:{
-      x:{grid:{color:"rgba(255,255,255,.06)"}},
-      y:{grid:{color:"rgba(255,255,255,.06)"}, suggestedMax:100}
+    }
+  }
+});
+
+/* =========================
+   HEATMAP (CORRIGIDO)
+========================= */
+
+const heatCanvas = document.createElement("canvas");
+document.body.appendChild(heatCanvas);
+
+new Chart(heatCanvas, {
+  type: "scatter",
+  data: {
+    datasets: [{
+      label: "Heatmap",
+      data: [
+        {x:0,y:0},
+        {x:1,y:1}
+      ],
+      backgroundColor: "rgba(46,204,113,.6)",
+      pointRadius: 10
+    }]
+  },
+  options: {
+    scales: {
+      x: {
+        type: "linear",
+        grid: safeGrid()   // ✅ corrigido
+      },
+      y: {
+        type: "linear",
+        grid: safeGrid()   // ✅ corrigido
+      }
+    }
+  }
+});
+
+/* =========================
+   TIMELINE (CORRIGIDO)
+========================= */
+
+const lineCanvas = document.createElement("canvas");
+document.body.appendChild(lineCanvas);
+
+new Chart(lineCanvas, {
+  type: "line",
+  data: {
+    labels: ["Semana 1","Semana 2","Semana 3"],
+    datasets: [{
+      label: "% SIM",
+      data: [40, 60, 80],
+      borderColor: "#4aa3ff",
+      fill: true
+    }]
+  },
+  options: {
+    scales: {
+      x: {
+        grid: safeGrid()   // ✅ corrigido
+      },
+      y: {
+        grid: safeGrid(),  // ✅ corrigido
+        suggestedMin: 0,
+        suggestedMax: 100
+      }
     }
   }
 });

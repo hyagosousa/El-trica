@@ -1,5 +1,47 @@
 
-<!doctype html>
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>El-trica</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="El-trica" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="https://hyagosousa.github.io/El-trica/" />
+<meta property="og:url" content="https://hyagosousa.github.io/El-trica/" />
+<meta property="og:site_name" content="El-trica" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="El-trica" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","headline":"El-trica","name":"El-trica","url":"https://hyagosousa.github.io/El-trica/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/El-trica/assets/css/style.css?v=a469a5d6f81326aa4bafcf8fa15ed9c4688e8ba1">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/El-trica/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <div class="container-lg px-3 my-5 markdown-body">
+      
+      <h1><a href="https://hyagosousa.github.io/El-trica/">El-trica</a></h1>
+      
+
+      
+<p>&lt;!doctype html&gt;</p>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
@@ -146,4 +188,12 @@ new Chart(lineCanvas, {
 </script>
 
 </body>
+</html>
+
+
+      
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
+    <script>anchors.add();</script>
+  </body>
 </html>

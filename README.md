@@ -1,253 +1,239 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dashboard Controle Processo — Fase Elétrica</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Motorhomes - Globe</title>
 
-  <style>
-    :root{
-      --bg:#0b1220;
-      --card:#121c33;
-      --muted:#8ea0c2;
-      --text:#e7efff;
-      --line:rgba(255,255,255,.08);
-      --good:#2ecc71;
-      --bad:#e74c3c;
-      --na:#f1c40f;
-      --info:#4aa3ff;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --radius: 14px;
-    }
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    body{
-      margin:0;
-      font-family: system-ui;
-      background: radial-gradient(1200px 600px at 20% 0%, #1b2a55 0%, var(--bg) 45%, #070b14 100%);
-      color:var(--text);
-    }
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b0f1a;
+  color: #fff;
+}
 
-    canvas{width:100% !important;height:290px !important;}
-    .smallCanvas canvas{height:240px !important;}
-  </style>
+/* HEADER */
+header {
+  padding: 20px;
+  background: #111a2e;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* GRID */
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  padding: 15px;
+}
+
+.card {
+  background: #121c33;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+/* KPIs */
+.kpi {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+  padding: 8px;
+  background: #0f172a;
+  border-radius: 6px;
+}
+
+/* OS LIST */
+.os {
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 8px;
+  background: #0f172a;
+  transition: 0.3s;
+}
+
+.os strong {
+  display: block;
+}
+
+/* ALERTA AMARELO */
+.warning {
+  border: 2px solid #ffcc00;
+  color: #ffcc00;
+  animation: blinkWarn 1.2s infinite;
+}
+
+/* ALERTA VERMELHO */
+.danger {
+  background: #3a0d0d;
+  border: 2px solid red;
+  color: #ff3b3b;
+  animation: blinkDanger 0.8s infinite;
+  font-weight: bold;
+}
+
+@keyframes blinkDanger {
+  0% {opacity: 1;}
+  50% {opacity: 0.3;}
+  100% {opacity: 1;}
+}
+
+@keyframes blinkWarn {
+  0% {border-color: #ffcc00;}
+  50% {border-color: transparent;}
+  100% {border-color: #ffcc00;}
+}
+
+/* STATUS TAGS */
+.status {
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  display: inline-block;
+  margin-top: 5px;
+}
+
+.em-andamento { background: #1e3a8a; }
+.executado { background: #166534; }
+.aguardando { background: #92400e; }
+.parado { background: #374151; }
+.concluido { background: #065f46; }
+
+/* CHART */
+canvas {
+  background: #0f172a;
+  padding: 10px;
+  border-radius: 10px;
+}
+</style>
 </head>
 
 <body>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<header>
+DASHBOARD MOTORHOMES • GLOBE SYSTEM
+</header>
 
-<script>
-function safeGrid(){
-  return { color: "rgba(255,255,255,.06)" };
-}
+<div class="container">
 
-/* =========================
-   GRÁFICO BARRA
-========================= */
+<!-- KPIs -->
+<div class="card">
+<h3>Indicadores</h3>
 
-const ctx = document.createElement("canvas");
-document.body.appendChild(ctx);
+<div class="kpi"><span>OS Abertas</span><strong>12</strong></div>
+<div class="kpi"><span>Em Andamento</span><strong>6</strong></div>
+<div class="kpi"><span>Concluídas</span><strong>9</strong></div>
+<div class="kpi"><span>Atrasadas</span><strong id="atrasadas">0</strong></div>
 
-new Chart(ctx, {
-  type: "bar",
-  data: {
-    labels: ["A", "B", "C"],
-    datasets: [{
-      label: "Teste",
-      data: [10, 20, 30],
-      backgroundColor: "rgba(74,163,255,.7)"
-    }]
-  },
-  options: {
-    scales: {
-      x: {
-        ticks: { color: "#cfe0ff" },
-        grid: safeGrid()
-      },
-      y: {
-        ticks: { color: "#cfe0ff" },
-        grid: safeGrid()
-      }
-    }
-  }
-});
+</div>
 
-/* =========================
-   HEATMAP
-========================= */
+<!-- CHART -->
+<div class="card">
+<h3>Status Geral</h3>
+<canvas id="chartStatus"></canvas>
+</div>
 
-const heatCanvas = document.createElement("canvas");
-document.body.appendChild(heatCanvas);
-
-new Chart(heatCanvas, {
-  type: "scatter",
-  data: {
-    datasets: [{
-      label: "Heatmap",
-      data: [
-        {x:0,y:0},
-        {x:1,y:1}
-      ],
-      backgroundColor: "rgba(46,204,113,.6)",
-      pointRadius: 10
-    }]
-  },
-  options: {
-    scales: {
-      x: {
-        type: "linear",
-        grid: safeGrid()
-      },
-      y: {
-        type: "linear",
-        grid: safeGrid()
-      }
-    }
-  }
-});
-
-/* =========================
-   TIMELINE
-========================= */
-
-const lineCanvas = document.createElement("canvas");
-document.body.appendChild(lineCanvas);
-
-new Chart(lineCanvas, {
-  type: "line",
-  data: {
-    labels: ["Semana 1","Semana 2","Semana 3"],
-    datasets: [{
-      label: "% SIM",
-      data: [40, 60, 80],
-      borderColor: "#4aa3ff",
-      fill: true
-    }]
-  },
-  options: {
-    scales: {
-      x: {
-        grid: safeGrid()
-      },
-      y: {
-        grid: safeGrid(),
-        suggestedMin: 0,
-        suggestedMax: 100
-      }
-    }
-  }
-});
-</script>
-
-<!-- =========================
-     MÓDULO MANUTENÇÕES
-========================= -->
-
-<div style="
-  margin:30px auto;
-  max-width:1100px;
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  padding:20px;
-">
-
-  <h2 style="margin:0 0 15px 0; font-size:18px;">
-    🚐 Controle de Manutenções de Veículos
-  </h2>
-
-  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;">
-
-    <input id="veiculo" placeholder="Veículo"
-      style="padding:10px;border-radius:10px;border:1px solid var(--line);background:#0f1930;color:var(--text);">
-
-    <input id="entrada" type="date"
-      style="padding:10px;border-radius:10px;border:1px solid var(--line);background:#0f1930;color:var(--text);">
-
-    <input id="saida" type="date"
-      style="padding:10px;border-radius:10px;border:1px solid var(--line);background:#0f1930;color:var(--text);">
-
-    <input id="responsavel" placeholder="Responsável"
-      style="padding:10px;border-radius:10px;border:1px solid var(--line);background:#0f1930;color:var(--text);">
-
-    <select id="status"
-      style="padding:10px;border-radius:10px;border:1px solid var(--line);background:#0f1930;color:var(--text);">
-
-      <option>Em andamento</option>
-      <option>Aguardando peça</option>
-      <option>Finalizado</option>
-    </select>
-
-  </div>
-
-  <button onclick="addManutencao()"
-    style="
-      margin-top:12px;
-      padding:10px 15px;
-      border-radius:10px;
-      border:none;
-      background:var(--info);
-      color:white;
-      cursor:pointer;
-      font-weight:600;
-    ">
-    + Adicionar Manutenção
-  </button>
-
-  <div style="margin-top:20px;overflow:auto;">
-    <table style="width:100%;border-collapse:collapse;min-width:800px;">
-      <thead>
-        <tr style="text-align:left;color:var(--muted);border-bottom:1px solid var(--line);">
-          <th>Veículo</th>
-          <th>Entrada</th>
-          <th>Saída Prevista</th>
-          <th>Responsável</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-
-      <tbody id="tabelaManutencao"></tbody>
-    </table>
-  </div>
+<!-- OS LIST -->
+<div class="card" style="grid-column: span 2;">
+<h3>Ordens de Serviço</h3>
+<div id="osList"></div>
+</div>
 
 </div>
 
 <script>
-function addManutencao(){
+// ========================
+// DADOS EXEMPLO
+// ========================
+const osData = [
+  {id:"MH-121", cliente:"Carlos", status:"em andamento", entrega:"2026-06-20"},
+  {id:"MH-125", cliente:"João", status:"aguardando", entrega:"2026-06-26"},
+  {id:"MH-130", cliente:"Pedro", status:"executado", entrega:"2026-06-30"},
+  {id:"MH-118", cliente:"Lucas", status:"em andamento", entrega:"2026-06-23"},
+  {id:"MH-140", cliente:"Rafael", status:"parado", entrega:"2026-06-22"}
+];
 
-  const veiculo = document.getElementById("veiculo").value;
-  const entrada = document.getElementById("entrada").value;
-  const saida = document.getElementById("saida").value;
-  const responsavel = document.getElementById("responsavel").value;
-  const status = document.getElementById("status").value;
+// ========================
+// CALCULO STATUS PRAZO
+// ========================
+function getAlert(entrega){
+  const hoje = new Date();
+  const data = new Date(entrega);
+  const diff = (data - hoje) / (1000*60*60*24);
 
-  if(!veiculo || !entrada || !responsavel){
-    alert("Preencha Veículo, Entrada e Responsável");
-    return;
-  }
-
-  let cor = "#f1c40f";
-  if(status === "Finalizado") cor = "#2ecc71";
-  if(status === "Aguardando peça") cor = "#e74c3c";
-
-  const row = `
-    <tr style="border-bottom:1px solid var(--line);">
-      <td>${veiculo}</td>
-      <td>${entrada}</td>
-      <td>${saida || "-"}</td>
-      <td>${responsavel}</td>
-      <td style="color:${cor};font-weight:600;">${status}</td>
-    </tr>
-  `;
-
-  document.getElementById("tabelaManutencao").innerHTML += row;
-
-  document.getElementById("veiculo").value = "";
-  document.getElementById("entrada").value = "";
-  document.getElementById("saida").value = "";
-  document.getElementById("responsavel").value = "";
+  if(diff < 0) return "danger";
+  if(diff <= 3) return "warning";
+  return "";
 }
+
+// ========================
+// RENDER OS
+// ========================
+function renderOS(){
+
+  const container = document.getElementById("osList");
+  container.innerHTML = "";
+
+  let atrasadas = 0;
+
+  // ordena prioridade (atrasados primeiro)
+  osData.sort((a,b)=> new Date(a.entrega) - new Date(b.entrega));
+
+  osData.forEach(os => {
+
+    const alertClass = getAlert(os.entrega);
+
+    if(alertClass === "danger") atrasadas++;
+
+    const div = document.createElement("div");
+    div.className = "os " + alertClass;
+
+    div.innerHTML = `
+      <strong>
+        ${alertClass === "danger" ? "🚨" : alertClass === "warning" ? "⚠" : ""}
+        ${os.id} • ${os.cliente}
+      </strong>
+
+      <div>Entrega: ${os.entrega}</div>
+
+      <span class="status ${os.status.replace(" ","-")}">
+        ${os.status.toUpperCase()}
+      </span>
+    `;
+
+    container.appendChild(div);
+  });
+
+  document.getElementById("atrasadas").innerText = atrasadas;
+}
+
+// ========================
+// GRAFICO
+// ========================
+function chart(){
+const ctx = document.getElementById('chartStatus');
+
+new Chart(ctx, {
+  type: 'pie',
+  data: {
+    labels: ['Concluído', 'Em andamento', 'Aguardando', 'Parado'],
+    datasets: [{
+      data: [40, 30, 20, 10],
+      backgroundColor: ['#16a34a','#2563eb','#f59e0b','#6b7280']
+    }]
+  }
+});
+}
+
+renderOS();
+chart();
+
 </script>
 
 </body>
